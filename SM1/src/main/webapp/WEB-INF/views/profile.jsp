@@ -1,3 +1,9 @@
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
+<%
+response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate"); // HTTP 1.1.
+response.setHeader("Pragma", "no-cache"); // HTTP 1.0.
+response.setHeader("Expires", "0");
+%>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -8,7 +14,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="">
-
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
     <title>Social Media</title>
 
     <!-- Bootstrap Core CSS -->
@@ -25,6 +31,7 @@
 
     <!-- Custom Fonts -->
     <link href="vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    
 	<style>
 	.nav-pills > li.active > a, .nav-pills > li.active > a:hover, .nav-pills > li.active > a:focus {
     color:white;
@@ -37,9 +44,13 @@
    background-color: #F0AD4E;
    color:white
 }
+tr.spaceUnder > td
+{
+  padding-bottom: 1em;
+}
 	
 	</style>
-    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+    
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -50,7 +61,7 @@
 
 </head>
 
-<body>
+<body ng-app="myApp" ng-controller="dataCtrl" >
 
    
        <jsp:include page="fheader.jsp"></jsp:include>
@@ -84,14 +95,13 @@
 <div id="wrapper">
 <div id="page-wrapper">
 
-
                    
                         <div class="panel-body">
                             <!-- Nav tabs -->
                             <ul class="nav nav-pills" >
                                 <li class="active"><a href="#home-pills" data-toggle="tab" class="whitef"><strong>Home</strong></strong></a>
                                 </li>
-                                <li><a href="#profile-pills" data-toggle="tab" class="whitef"><strong>Profile</strong></a>
+                                <li><a href="#profile-pills" data-toggle="tab" class="whitef" ><strong>Profile</strong></a>
                                 </li>
                                 <li><a href="#messages-pills" data-toggle="tab" class="whitef"><strong>Messages</strong></a>
                                 </li>
@@ -113,26 +123,85 @@
                                     <h4><strong>Profile</strong></h4>
                                     <hr>
                                     <div class="col-lg-4">
-                                                  
+                                                <br>
+                                                <br>  
                         					<div class="panel-body">
-                           						<img src="dist/Images/pic1.jpg" class="img-circle" width="200" height="200" />
-                                       </div>
+                           						<img ng-src="dist/Images/{{imagedata}}" class="img-circle" width="200" height="200" />
+                           						<br><div><a href="#uploadModal" data-toggle="modal" style="color:#F0AD4E"><strong>&nbsp Change your Profile Picture</strong></a></div>
+                                       		</div>
+                                       		<div class="modal fade" id="uploadModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                                            <h4 class="modal-title" id="myModalLabel">Select your file here!</h4>
+                                        </div>
+                                        <div class="modal-body">
+                                        <form:form method="POST" modelAttribute="FileObj" enctype="multipart/form-data" class="form-horizontal">
+         
+            <div class="row">
+                <div class="form-group col-md-12">
+                    <label class="col-md-3 control-lable" for="file">Upload a file</label>
+                    <div class="col-md-7">
+                        <form:input type="file" path="file" id="file" />
+                        
+                    </div>
+                </div>
+            </div>
+     
+         
+                <div class="form-actions floatRight">
+                    <input type="submit" value="Upload" class="btn btn-warning btn-sm" >
+                </div>
+       
+        </form:form>
+              
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                          
+                                        </div>
+                                    </div>
+                                    <!-- /.modal-content -->
+                                </div>
+                                <!-- /.modal-dialog -->
+                            </div>
                            		
                            			</div>
-                 
+      
                                     <div class="col-lg-8">                    
                       					<div class="panel panel-yellow">
-                       						<div class="panel-heading">
-                            					{{user name}}
+                       						<div class="panel-heading" >
+                            				<strong>{{userdata.firstName+' '+userdata.lastName}}</strong>
                         					</div>
                         				<div class="panel-body">
-                            					<p>{{user details}}</p>
-                           						<br>
-                           						 <br>
-                           						 <br>
-                           						 <br>
-                           						 <br>
-                           						 <br>
+                            					<table padding="10" style="font-weight:bold" >
+                            					<tr class="spaceUnder">
+                            					<td>First Name</td><td>&nbsp:&nbsp</td><td>{{userdata.firstName}}</td>
+                            					</tr>
+                            					<tr class="spaceUnder">
+                            					<td>Last Name</td><td>&nbsp:&nbsp</td><td>{{userdata.lastName}}</td>
+                            					</tr>
+                            					<tr class="spaceUnder">
+                            					<td>Email</td><td>&nbsp:&nbsp</td><td>{{userdata.email}}</td>
+                            					</tr>
+                            					<tr class="spaceUnder">
+                            					<td>Sex</td><td>&nbsp:&nbsp</td><td>{{userdata.gender}}</td>
+                            					</tr >
+                            					<tr class="spaceUnder">
+                            					<td>Date of Birth</td><td>&nbsp:&nbsp</td><td>{{userdata.dob|dateOnly}}</td>
+                            					</tr>
+                            					<tr class="spaceUnder">
+                            					<td colspan="3"><a href="" style="color:#F0AD4E">Click here</a> to add Academic details</td>
+                            					</tr>
+                            					<tr class="spaceUnder">
+                            					<td colspan="3"><a href="" style="color:#F0AD4E">Click here</a> to add Work details</td>
+                            					</tr>
+                            					<tr>
+                            					<td colspan="3"><a href="" style="color:#F0AD4E">Click here</a> to add Other Personal details</td>
+                            					</tr>
+                            				
+                            					</table>
                         				</div>
                         				
                    				    </div>
@@ -146,7 +215,7 @@
                                
                                 <div class="tab-pane fade whitef" id="messages-pills">
                                     <h4>Messages</h4>
-                                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+                                    <a href="chats">Click here to launch a private chat window.</a>
                                 </div>
                                 <div class="tab-pane fade whitef" id="settings-pills">
                                     <h4>Settings</h4>
@@ -162,6 +231,34 @@
                 </div><!-- wrapper -->
            
  <jsp:include page="ffooter.jsp" />
+ <script>
+ var app=angular.module('myApp',[]);
+ app.controller('dataCtrl',function($scope, $interval)
+		 {
+ 	
+	 $scope.userdata = ${userString};
+	 $scope.imagedata=${imageString};
+    
+ 	
+ 		
+ 		
+ 
+ 	
+ 		});
+app.filter('myDate', function($filter) {    
+    var angularDateFilter = $filter('date');
+    return function(theDate) {
+       return angularDateFilter(theDate, 'dd/MM/yyyy - hh:mm:ss a');
+    }
+});
+app.filter('dateOnly', function($filter) {    
+    var angularDateFilter = $filter('date');
+    return function(theDate) {
+       return angularDateFilter(theDate, 'dd/MM/yyyy');
+    }
+});
+</script>
+ 
     <!-- jQuery -->
     <script src="vendor/jquery/jquery.min.js"></script>
 

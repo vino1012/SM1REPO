@@ -1,6 +1,7 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
    xmlns:context="http://www.springframework.org/schema/context"
    xmlns:mvc="http://www.springframework.org/schema/mvc"
+   xmlns:websocket="http://www.springframework.org/schema/websocket"
    xmlns:tx="http://www.springframework.org/schema/tx"
    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
    xsi:schemaLocation="
@@ -11,7 +12,9 @@
    http://www.springframework.org/schema/tx 
    http://www.springframework.org/schema/tx/spring-tx.xsd
    http://www.springframework.org/schema/context 
-   http://www.springframework.org/schema/context/spring-context.xsd">
+   http://www.springframework.org/schema/context/spring-context.xsd
+   http://www.springframework.org/schema/websocket
+   http://www.springframework.org/schema/websocket/spring-websocket.xsd">
    
   
   <mvc:annotation-driven/>
@@ -28,7 +31,20 @@
     	<context:component-scan base-package="sm1.model" />
     	<context:component-scan base-package="sm1.dao" />
     	<context:component-scan base-package="sm1.service" />
+    	<context:annotation-config/>
     
+     <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+  
+        <!-- one of the several properties available; the maximum file size in bytes -->
+        <property name="maxUploadSizePerFile" value="5242880"/>
+    </bean>
+    
+    <websocket:message-broker application-destination-prefix="/app">
+        <websocket:stomp-endpoint path="/chat">
+            <websocket:sockjs/>
+        </websocket:stomp-endpoint>
+        <websocket:simple-broker prefix="/topic"/>
+    </websocket:message-broker>
        
        <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
       <property name="prefix" value="/WEB-INF/views/" />
